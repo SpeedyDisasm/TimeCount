@@ -1,0 +1,16 @@
+nop <1000000
+nop <100000
+nop <10000
+nop <1000
+nop <100
+nop <10
+nop <1
+
+add esi,esi <1000000
+add esi,esi <100000
+add esi,esi <10000
+add esi,esi <1000
+add esi,esi <100
+add esi,esi <10
+add esi,esi <1
+
