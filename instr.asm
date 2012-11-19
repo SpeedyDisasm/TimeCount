@@ -2,6 +2,7 @@
 		.model	flat,stdcall
 		option	casemap:none
 		BSIZE equ 15
+		COUNT equ 1000000 ;1 000 000
 
 include windows.inc
 include user32.inc
@@ -15,6 +16,7 @@ outp	db BSIZE dup(?)
 FileNam db '\result.txt', 0
 hParametr dd 0h
 nemA dd 0h
+var dw 0h
 
 		.code
 main proc
@@ -22,6 +24,9 @@ main proc
 	push eax
 	push ebx
 	push ecx
+	
+	lea edi, var
+	mov [edi], 1
 	
 commands MACRO 
 		rept 100000
@@ -41,6 +46,9 @@ commands MACRO
 		
 		commands
 		rdtsc
+		rept COUNT
+			pop eax
+		endm
 		mov ebx, eax
 		mov ecx, edx
 		pop edx

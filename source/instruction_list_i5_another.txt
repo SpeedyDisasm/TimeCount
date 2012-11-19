@@ -1,0 +1,15 @@
+push eax
+push 1
+push [edi]
+pop eax
+pop [edi]
+pusha 
+pushad
+pushf
+pushfd
+pushfq
+popa
+popad
+popf
+popfq
+popfd

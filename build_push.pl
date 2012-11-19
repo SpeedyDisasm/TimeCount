@@ -13,6 +13,7 @@ my $start = q { .686
 		.model	flat,stdcall
 		option	casemap:none
 		BSIZE equ 15
+		COUNT equ 1000000 ;1 000 000
 
 include windows.inc
 include user32.inc
@@ -35,7 +36,6 @@ main proc
 	push ebx
 	push ecx
 	
-	
 commands MACRO 
 		rept };
 my $end = '
@@ -56,6 +56,9 @@ my $end = '
 		
 		commands
 		rdtsc
+		rept COUNT
+			pop eax
+		endm
 		mov ebx, eax
 		mov ecx, edx
 		pop edx
