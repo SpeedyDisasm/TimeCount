@@ -1,15 +1,18 @@
+use 5.016;
 use warnings;
 use List::Util qw (max min sum);
 
-open my $source, "<source.txt" or die "source.txt not found\n";
-open my $result, ">>result.txt" or die "result.txt not found\n";
-truncate $result, 0;
+use constant COUNT => 10_000_000;
+
+open my $source, "<", "source.txt" or die "source.txt not found\n";
+#open my $source, "<", "instruction_list_i5.txt" or die "source.txt not found\n";
+#truncate $result, 0;
 
 $\=$/;
 # storage for times
 my @times;
 
-my $start = q { .686
+my $start = " .686
 		.model	flat,stdcall
 		option	casemap:none
 		BSIZE equ 15
@@ -21,12 +24,13 @@ include kernel32.inc
 includelib kernel32.lib
 
 		.data
-ifmt	db "%0lu", 0
+ifmt	db \"%0lu\", 0
 outp	db BSIZE dup(?)
-FileNam db '\result.txt', 0
+FileNam db 'result.txt', 0
 hParametr dd 0h
 nemA dd 0h
-var dw 0h
+		.data?
+	var db ?
 
 		.code
 main proc
@@ -37,18 +41,15 @@ main proc
 	
 	
 commands MACRO 
-		rept };
+		rept ";
 my $end = '
 			endm
 		endm
 		
-		invoke	GetStdHandle, STD_OUTPUT_HANDLE
-		mov esi, eax
-		
 		mov ecx, 1
 		mov edi, 1
-		lea edi, var
-		mov [edi], 1
+		;lea edi, var
+		;mov [edi], 1
 		
 		rdtsc
 		push eax
@@ -81,57 +82,62 @@ my $end = '
 		main endp
 	end main';
 
-for (my $i = 0; $i < 100; $i++) {
-	while(<$source>) {
-		chomp;
-		print STDOUT "\nRead from source.txt = ".${_};
-		if (length($_) != 0) {
-			&asmMaker($_) or die;
-			system("ml /nologo /c /coff instr.asm");
-			system("link /nologo /subsystem:console instr.obj");
-			system("instr.exe>insrt.txt");
-			unlink("instr.exe", "instr.obj");
+while(<$source>) {
+	chomp;
+	s'//.*'';
 	
-			open my $asm_res, "<C:\\result.txt" or die ("C:\\result.txt not found");
-			$line = <$asm_res>;
-			print $result $line." on operation ".$_." times\n";
-			print STDOUT "Result from = ".$line;
+	if (length($_) != 0) {
+		my $instr = $_;
+		&asmMaker($instr) or die;
+		system("ml /c /coff instr.asm");
+		system("link /subsystem:console instr.obj");
+		open my $result, ">>", $instr.".txt" or die "cann't create ".$instr.".txt";
+		
+		for (0..1_000) {
+			system("instr.exe");
+			open my $asm_res, "<", "result.txt" or die ("result.txt not found");
+			my $line = <$asm_res>;
+			$line =~ /(\d+)/;
+			$line = $1/COUNT;
+			#print $result $line." on operation ".$instr." times\n";
+			print $result $line;
+			#print STDOUT "Result from = ".$line;
 			close $asm_res;
 	
 			#save time
-			(@times) = ($line, @times);
+			push @times, $line;
+			
 		}
+		unlink("instr.exe", "instr.obj", "result.txt");
+		&showTimes($instr);
+		close $result;
 	}
-	print STDOUT $i;
-	seek $source, 0, 0;
 }
-system ("del C:\\result.txt");
 
-&showTimes();
 
 close $source;
-close $result;
 
 sub asmMaker {
-	my $instr = pop @_;
+	my $inp = pop @_;
 	#$instr =~ s/([\w\s]+)(.\<)(\w+)/${3}\n\t\t${1}/g;
-	@mass = split /</, $instr;
-	$instr = $mass[1]."\n\t\t".$mass[0];
+	my @mass = split /</, $inp;
+	#print "@mass";
+	my $instr = ($mass[1]) ?  $mass[1]."\n\t\t".$mass[0] : COUNT."\n\t\t".$mass[0];
+	#print $instr;
 	open my $result, ">", "instr.asm" or return 0;
-	select $result;
-	print $start.$instr.$end;
+	print $result $start.$instr.$end;
 	close $result;
 	return 1;
 }
 
 sub showTimes {
-	select $result; 
+	print pop @_;
 	# find max
-	$max_time = max @times;
+	my $max_time = max @times;
 	print "Max time = ".$max_time;
-	$min_time = min @times;
+	my $min_time = min @times;
 	print "Min time = ".$min_time;
-	$avg_time = (sum @times)/scalar @times;
+	my $avg_time = (sum @times)/scalar @times;
 	print "Average time = ".$avg_time;
 		
 	undef @times;

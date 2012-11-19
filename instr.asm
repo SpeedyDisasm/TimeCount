@@ -2,7 +2,6 @@
 		.model	flat,stdcall
 		option	casemap:none
 		BSIZE equ 15
-		COUNT equ 1000000 ;1 000 000
 
 include windows.inc
 include user32.inc
@@ -13,10 +12,11 @@ includelib kernel32.lib
 		.data
 ifmt	db "%0lu", 0
 outp	db BSIZE dup(?)
-FileNam db '\result.txt', 0
+FileNam db 'result.txt', 0
 hParametr dd 0h
 nemA dd 0h
-var dw 0h
+		.data?
+	var db ?
 
 		.code
 main proc
@@ -25,20 +25,17 @@ main proc
 	push ebx
 	push ecx
 	
-	lea edi, var
-	mov [edi], 1
 	
 commands MACRO 
-		rept 100000
-		add esi,esi 
+		rept 10000
+		mov eax, 1 
 			endm
 		endm
 		
-		invoke	GetStdHandle, STD_OUTPUT_HANDLE
-		mov esi, eax
-		
 		mov ecx, 1
 		mov edi, 1
+		;lea edi, var
+		;mov [edi], 1
 		
 		rdtsc
 		push eax
@@ -46,9 +43,6 @@ commands MACRO
 		
 		commands
 		rdtsc
-		rept COUNT
-			pop eax
-		endm
 		mov ebx, eax
 		mov ecx, edx
 		pop edx

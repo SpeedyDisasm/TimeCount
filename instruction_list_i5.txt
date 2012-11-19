@@ -1,0 +1,196 @@
+mov eax, ebx //1 0.33
+mov eax, 1 //1 0.33
+mov eax, [edi] //2 0.5
+mov [edi], eax //3 1 
+mov [edi], 1 //_ 1
+movnti [edi], eax //350 1
+movsx eax, ebx //1 0.33
+movzx eax, ebx //1 0.33
+movsxd eax, ebx //1 0.33
+movsx eax, [edi] //_ 0.5
+movzx eax, [edi] //_ 0.5
+movsxd eax, [edi] //_ 0.5
+cmovcc eax, ebx //2 1
+cmovcc eax, [edi] //_ 1
+xchg eax, ebx //2 1
+xchg eax, [edi] //25 _
+xlat //7 1
+lahf //3 1
+sahf //1 1
+salc //1 1
+lea edi, var //1 0.5
+bswap eax //1 1
+bswap rax //2 1
+prefetchnta //_ 0.5
+prefetcht0 //_ 0.5
+prefetcht1 //_ 0.5
+prefetcht2 //_ 0.5
+lfence //_ 4
+mfence //_ 33
+sfence //_ 6
+add eax, ebx //1 0.33
+add eax, 1 //1 0.33
+add eax, [edi] //_ 0.5
+add [edi], eax //6 1
+add [edi], 1 //6 1
+sub eax, ebx //1 0.33
+sub eax, 1 //1 0.33
+sub eax, [edi] //_ 0.5
+sub [edi], eax //6 1
+sub [edi], 1 //6 1
+sub eax, eax //0 0.25
+adc eax, ebx //2 1
+adc eax, 1 //2 1
+adc eax, [edi] //2 1
+adc [edi], eax //7 1.5
+adc [edi], 1 //7 1.5
+sbb eax, ebx //2 1
+sbb eax, 1 //2 1
+sbb eax, [edi] //2 1
+sbb [edi], eax //7 1.5
+sbb [edi], 1 //7 1.5
+cmp eax, ebx //1 0.33
+cmp eax, 1 //1 0.33
+cmp [edi], eax //1 0.5
+cmp [edi], 1  //1 0.5
+inc eax //1 0.33
+inc [edi] //6 2
+dec eax //1 0.33
+dec [edi] //6 2
+neg eax //1 0.33
+neg [edi] //6 2
+not eax //1 0.33
+not [edi] //6 2
+AAA //4 _
+aas //4 _
+daa //4 _
+das //4 _
+aad //2 _
+aam //20 11
+mul al //3 1
+mul ax //4 2
+mul eax //4 2
+mul rax //3 1
+imul al //3 1
+imul ax //4 2
+imul eax //4 2
+imul rax //3 1
+imul eax, ebx //3 1
+imul ax, bx, 2 //4 1
+imul eax, ebx, 2 //3 1
+imul rax, rbx, 2 //3 1
+mul byte ptr[edi] //3 1
+mul word ptr[edi] //_ 2
+mul dword ptr[edi] //_ 2
+mul qword ptr[edi] //_ 2
+imul byte ptr[edi] //3 1
+imul word ptr[edi] //_ 2
+imul dword ptr[edi] //_ 2
+imul qword ptr[edi] //_ 2
+imul eax, 2 //_ 1
+imul ax, word ptr[edi], 2 //_ 1
+imul eax, dword ptr[edi], 2 //_ 1
+imul rax, qword ptr[edi], 2 //_ 1
+div bl //20-24 11-14
+div bx //21-25 11-14
+div ebx //20-28 11-18
+div rax //30-94 22-76
+idiv bl //21-24 11-14
+idiv bx //21-25 11-14
+idiv ebx //20-27 11-18
+idiv rax //40-103 25-84
+cbw //1 0.5
+cwde //1 1
+cdqe //1 0.5
+cwd //1 1
+cdq //1 1
+cqo //1 0.5
+popcnt eax, ebx //3 1
+popcnt eax, [edi] //_ 1
+crc32 eax, ebx //3 1
+crc32 eax, [edi] //_ 1
+and eax, ebx //1 0.33
+and eax, 1 //1 0.33
+and eax, [edi] //_ 0.5
+and [edi], eax //6 1
+or eax, ebx //1 0.33
+or eax, 1 //1 0.33
+or eax, [edi] //_ 0.5
+or [edi], eax //6 1
+xor eax, ebx //1 0.33
+xor eax, 1 //1 0.33
+xor eax, [edi] //_ 0.5
+xor [edi], eax //6 1
+xor eax, eax //0 0.25
+test eax, ebx //1 0.33
+test eax, 1 //1 0.33
+test [edi], eax //_ 0.5
+test [edi], 1 //_ 0.5
+shr eax, 1 //1 0.5
+shl eax, 1 //1 0.5
+sar eax, 1 //1 0.5
+shr [edi], 1 //1 2
+shl [edi], 1 //1 2
+sar [edi], 1 //1 2
+shr eax, cl //2 2
+shl eax, cl //2 2
+sar eax, cl //2 2
+shr [edi], cl //_ 4
+shl [edi], cl //_ 4
+sar [edi], cl //_ 4
+ror eax, 1 //1 1
+ror [edi], 1 //_ 2
+ror eax, cl //2 2
+ror [edi], cl //_ 4
+rol eax, 1 //1 1
+rol [edi], 1 //_ 2
+rol eax, cl //2 2
+rol [edi], cl //_ 4
+rcr al, 1 //_ _
+rcr ax, 1 //2 2
+rcr eax, 1 //2 2
+rcr rax, 1 //2 2
+rcr eax, 5 //5 5
+rcr [edi], 5 //_ 6
+rcr eax, cl //5 5
+rcr [edi], cl //_ 6
+rcl eax, 1 //2 2
+rcl eax, 5 //6 6
+rcl [edi], 5 //_ 6
+rcl eax, cl //6 6
+rcl [edi], cl //_ 6
+shrd eax, ebx, 5 //_ 0.5
+shrd [edi], ebx, 5 //_ 2
+shrd eax, ebx, cl //2 2
+shrd [edi], ebx, cl //_ 4
+shld eax, ebx, 5 //_ 0.5
+shld [edi], ebx, 5 //_ 2
+shld eax, ebx, cl //2 2
+shld [edi], ebx, cl //_ 4
+bt eax, ebx //1 0.5
+bt eax, 5 //1 0.5
+bt [edi], 5 //_ 5
+bt eax, 5 //_ 0.5
+btr eax, ebx //1 0.5
+btr eax, 5 //1 0.5
+btr [edi], ebx //_ 2
+btr [edi], 5 //_ 5
+bts eax, ebx //1 0.5
+bts eax, 5 //1 0.5
+bts [edi], ebx //_ 2
+bts [edi], 5 //_ 5
+btc eax, ebx //1 0.5
+btc eax, 5 //1 0.5
+btc [edi], ebx //_ 2
+btc [edi], 5 //_ 5
+bsf eax, ebx //3 1
+bsf eax, [edi] //_ 1
+bsr eax, ebx //3 1
+bsr eax, [edi] //_ 1
+SETcc eax //1 0.5
+SETcc [edi] //_ 1
+clc //_ 0.25
+stc //1 0.33
+cmc //1 0.33
+cld //_ 4
+std //_ 4
