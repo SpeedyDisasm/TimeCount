@@ -3,15 +3,16 @@ use warnings;
 use List::Util qw (max min sum);
 use File::Copy;
 
-use constant COUNT => 10_000;
+use constant COUNT => 2_000_000;
+#use constant COUNT => 1_000;
 
 $\=$/;
 	
 opendir my $sourcedir, "source" or die "cannot open dir source: $!";
 foreach my $file (readdir $sourcedir) {
-	chdir('source'); #нехорошо получилось, надо бы задать эту директорию переменной
+	chdir 'source'; #нехорошо получилось, надо бы задать эту директорию переменной
 	open my $source, "<", $file or next;
-	chdir('..');
+	chdir '..';
 	print $file;
 
 	# storage for times

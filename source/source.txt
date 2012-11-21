@@ -1,4 +1,5 @@
+mov eax, ebx //1 0.33
+lea edi, var //1 0.5
 mov [edi], eax //3 1 
-//add esi,1 //<100000
-//mov eax, ebx //1 0.33
-//mov eax, 1 //1 0.33	
+xlat //7 1
+lahf //3 1
