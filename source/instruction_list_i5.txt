@@ -1,6 +1,7 @@
-mov eax, ebx //1 0.33
-mov eax, 1 //1 0.33
-mov eax, [edi] //2 0.5
+//mov eax, ebx //1 0.33
+//mov eax, 1 //1 0.33
+//mov eax, [edi] //2 0.5
+lea edi, var //1 0.5
 mov [edi], eax //3 1 
 mov [edi], 1 //_ 1
 movnti [edi], eax //350 1
@@ -18,7 +19,6 @@ xlat //7 1
 lahf //3 1
 sahf //1 1
 salc //1 1
-lea edi, var //1 0.5
 bswap eax //1 1
 bswap rax //2 1
 prefetchnta //_ 0.5

@@ -1,3 +1,0 @@
-add esi,1 //<100000
-mov eax, ebx //1 0.33
-mov eax, 1 //1 0.33
