@@ -5,7 +5,7 @@ use File::Copy;
 
 #use constant COUNT => 2_000_000;
 use constant COUNT => 10;
-use constant MIN =>18;
+use constant MIN =>30;
 
 $\=$/;
 	
@@ -19,7 +19,10 @@ foreach my $file (readdir $sourcedir) {
 	# storage for times
 	my @times;
 
-	my $start = " .686
+	my $start = " 
+			.686
+			.MMX
+			.XMM
 			.model	flat,stdcall
 			option	casemap:none
 			BSIZE equ 15
@@ -72,13 +75,17 @@ foreach my $file (readdir $sourcedir) {
 			pop eax
 			sub ebx, eax
 			sub ecx, edx
-			
+			push ecx			
+				invoke CreateFile, addr FileNam, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL
+				mov hParametr, eax
+			pop ecx
+			cmp ecx, 0
+			je equal
+			invoke	wsprintf, addr outp, addr ifmt, ecx
+			invoke WriteFile, hParametr, addr outp, 16, addr nemA, NULL
+equal:
 			invoke	wsprintf, addr outp, addr ifmt, ebx
-			invoke	WriteConsoleA, esi, addr outp, 10, 0, 0
-			
-			invoke CreateFile, addr FileNam, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL
-			mov hParametr, eax
-			invoke WriteFile, hParametr, addr outp, 10, addr nemA, NULL
+			invoke WriteFile, hParametr, addr outp, 16, addr nemA, NULL
 			invoke CloseHandle, hParametr
 			
 		pop edx
@@ -102,12 +109,12 @@ foreach my $file (readdir $sourcedir) {
 			system("link /subsystem:console instr.obj");
 			open my $result, ">>", $instr.".txt" or die "cann't create ".$instr.".txt";
 			
-			for (0..10_000) {
+			for (0..1_000) {
 				system("instr.exe");
 				open my $asm_res, "<", "result.txt" or die ("result.txt not found");
 				my $line = <$asm_res>;
-				$line =~ /(\d+)/;
-				$line = $1;
+				$line =~ s/(\D+)//;
+				#$line -= MIN;
 				print $result $line;
 				close $asm_res;
 		
@@ -118,7 +125,6 @@ foreach my $file (readdir $sourcedir) {
 			unlink("instr.exe", "instr.obj", "result.txt");
 			close $result;
 			move($instr.'.txt', 'result\\'.$instr.'.txt') or print "cannot move the file";
-			#&showTimes($instr);
 			undef @times;
 		
 		}
@@ -135,18 +141,5 @@ foreach my $file (readdir $sourcedir) {
 		print $result $start.$instr.$end;
 		close $result;
 		return 1;
-	}
-
-	sub showTimes {
-		print pop @_;
-		# find max
-		my $max_time = max @times;
-		print "Max time = ".$max_time;
-		my $min_time = min @times;
-		print "Min time = ".$min_time;
-		my $avg_time = (sum @times)/scalar @times;
-		print "Average time = ".$avg_time;
-			
-		undef @times;
 	}
 }

@@ -1,5 +1,5 @@
-nop
-//mov eax, ebx //1 0.33
+//nop
+mov eax, ebx //1 0.33
 //lea edi, var //1 0.5
 //mov [edi], eax //3 1 
 //xlat //7 1

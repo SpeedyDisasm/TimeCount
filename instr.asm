@@ -1,4 +1,7 @@
- .686
+ 
+			.686
+			.MMX
+			.XMM
 			.model	flat,stdcall
 			option	casemap:none
 			BSIZE equ 15
@@ -27,8 +30,8 @@
 		
 		
 	commands MACRO 
-			rept 110
-		nop
+			rept 10
+		mov eax, ebx 
 				endm
 			endm
 			
@@ -40,22 +43,28 @@
 			rdtsc
 			push eax
 			push edx
-			
-			;commands
+			lfence
+			commands
+			lfence
 			rdtsc
+			
 			mov ebx, eax
 			mov ecx, edx
 			pop edx
 			pop eax
 			sub ebx, eax
 			sub ecx, edx
-			
+			push ecx			
+				invoke CreateFile, addr FileNam, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL
+				mov hParametr, eax
+			pop ecx
+			cmp ecx, 0
+			je equal
+			invoke	wsprintf, addr outp, addr ifmt, ecx
+			invoke WriteFile, hParametr, addr outp, 16, addr nemA, NULL
+equal:
 			invoke	wsprintf, addr outp, addr ifmt, ebx
-			invoke	WriteConsoleA, esi, addr outp, 10, 0, 0
-			
-			invoke CreateFile, addr FileNam, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL
-			mov hParametr, eax
-			invoke WriteFile, hParametr, addr outp, 10, addr nemA, NULL
+			invoke WriteFile, hParametr, addr outp, 16, addr nemA, NULL
 			invoke CloseHandle, hParametr
 			
 		pop edx
