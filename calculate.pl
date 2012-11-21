@@ -3,8 +3,9 @@ use warnings;
 use List::Util qw (max min sum);
 use File::Copy;
 
-use constant COUNT => 2_000_000;
-#use constant COUNT => 1_000;
+#use constant COUNT => 2_000_000;
+use constant COUNT => 10;
+use constant MIN =>18;
 
 $\=$/;
 	
@@ -60,9 +61,11 @@ foreach my $file (readdir $sourcedir) {
 			rdtsc
 			push eax
 			push edx
-			
+			lfence
 			commands
+			lfence
 			rdtsc
+			
 			mov ebx, eax
 			mov ecx, edx
 			pop edx
@@ -99,15 +102,13 @@ foreach my $file (readdir $sourcedir) {
 			system("link /subsystem:console instr.obj");
 			open my $result, ">>", $instr.".txt" or die "cann't create ".$instr.".txt";
 			
-			for (0..1_000) {
+			for (0..10_000) {
 				system("instr.exe");
 				open my $asm_res, "<", "result.txt" or die ("result.txt not found");
 				my $line = <$asm_res>;
 				$line =~ /(\d+)/;
-				$line = $1/COUNT;
-				#print $result $line." on operation ".$instr." times\n";
+				$line = $1;
 				print $result $line;
-				#print STDOUT "Result from = ".$line;
 				close $asm_res;
 		
 				#save time
@@ -128,11 +129,8 @@ foreach my $file (readdir $sourcedir) {
 
 	sub asmMaker {
 		my $inp = pop @_;
-		#$instr =~ s/([\w\s]+)(.\<)(\w+)/${3}\n\t\t${1}/g;
 		my @mass = split /</, $inp;
-		#print "@mass";
 		my $instr = ($mass[1]) ?  $mass[1]."\n\t\t".$mass[0] : COUNT."\n\t\t".$mass[0];
-		#print $instr;
 		open my $result, ">", "instr.asm" or return 0;
 		print $result $start.$instr.$end;
 		close $result;

@@ -1,5 +1,5 @@
-Max time = 59.644833
+Max time = 201.2
 
-Min time = 0.846
+Min time = 16.2
 
-Average time = 2.60989982777036
+Average time = 22.0611783815708

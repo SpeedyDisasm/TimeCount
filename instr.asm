@@ -27,8 +27,8 @@
 		
 		
 	commands MACRO 
-			rept 2000000
-		lahf 
+			rept 110
+		nop
 				endm
 			endm
 			
@@ -41,7 +41,7 @@
 			push eax
 			push edx
 			
-			commands
+			;commands
 			rdtsc
 			mov ebx, eax
 			mov ecx, edx
