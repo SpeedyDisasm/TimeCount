@@ -1,0 +1,1 @@
+cmd.exe cd %CD%
