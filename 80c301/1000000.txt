@@ -1,0 +1,20 @@
+t32 (Instruction Timing for IA-32) v0.5
+Copyright (C) 2012 Baklanovsky@mail.ru
+
+... SER,rdtsc,SV,SER Code SER,rdtsc ...
+
+Usage: t32 [SER] [SV] I [C1] [J C2]
+  SER - n(default)|m|x|mx
+    n - none
+    m - memory load/save (mfence)
+    x - instruction stream (cpuid)
+  SV  - m(default)|p|x
+    m - in memory
+    p - in stack (push/pop)
+    x - in mmx registers (mm0,mm1)
+  I = 1 - 4294967295
+  J = 1 - floor((2000000 - len(C1)) / len(C2))
+  C1,C2 - even number of chars 0-9a-fA-F
+  Code = C1 C2 C2 ... (J times)
+
+BE CARE! Code will be execute.

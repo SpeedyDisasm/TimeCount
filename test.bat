@@ -5,5 +5,9 @@ rem результаты таймингов.
 rem Имена файлов соответствуют числу вхождений кода.
 rem По умолчанию число запусков 1000.
 
-md  %CD%\%1
-FOR %%A IN (10 100 1000 10000 100000 1000000) DO CALL t32.exe 1000 %%A %1 > %CD%\%1\%%A.txt
+md %CD%\Timings
+
+for /f %%i in (InstrTiming.txt) do (
+	md  %CD%\Timings\%%i
+	FOR %%j IN (10 100 1000 10000 100000 1000000) DO CALL t32.exe 1000 %%j %%i > %CD%\Timings\%%i\%%j.txt
+)
